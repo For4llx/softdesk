@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from authentification.views import SignupViewset
 
 router = routers.SimpleRouter()
-
+router.register('signup', SignupViewset, basename='signup')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
