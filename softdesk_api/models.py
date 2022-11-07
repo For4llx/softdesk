@@ -3,39 +3,39 @@ from django.db import models
 from django.conf import settings
 
 TYPES = [
-    ('Backend', 'backend'),
-    ('Frontend', 'frontend'),
-    ('iOS', 'ios'),
-    ('Android', 'android')
+    ('backend', 'Backend'),
+    ('frontend', 'Frontend'),
+    ('ios', 'iOS'),
+    ('android', 'Android')
 ]
 
 PERMISSIONS = [
-    ('Allowed', 'allowed'),
-    ('Forbidden', 'forbidden')
+    ('allowed', 'Allowed'),
+    ('forbidden', 'Forbidden')
 ]
 
 ROLES = [
-    ('Auteur', 'author'),
-    ('Responsable', 'manager'),
-    ('Créateur', 'creator')
+    ('author', 'Auteur'),
+    ('manager', 'Responsable'),
+    ('creator', 'Créateur')
 ]
 
 TAGS = [
-    ('Bug', 'bug'),
-    ('Tâche', 'task'),
-    ('Amélioration', 'improvement')
+    ('bug', 'Bug'),
+    ('task', 'Tâche'),
+    ('improvement', 'Amélioration')
 ]
 
 PRIORITIES = [
-    ('Mineur', 'minor'),
-    ('Haute', 'high'),
-    ('Crutial', 'critical')
+    ('minor', 'Mineur'),
+    ('high', 'Haute'),
+    ('critical', 'Crutial')
 ]
 
 STATUS = [
-    ('En attente', 'pending'),
-    ('En progression', 'in progress'),
-    ('Terminé', 'done')
+    ('pending', 'En attente'),
+    ('in progress', 'En progression'),
+    ('done', 'Terminé')
 ]
 
 class Project(models.Model):

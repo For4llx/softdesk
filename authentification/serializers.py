@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from authentification.models import User
  
 
-class SignupSerializer(ModelSerializer):
+class UserSerializer(ModelSerializer):
  
     class Meta:
         model = User
