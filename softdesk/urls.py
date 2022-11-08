@@ -15,15 +15,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
+from rest_framework_nested import routers
 from authentification.views import SignupViewset
-from softdesk_api.views import ProjectViewset
+from softdesk_api.views import ProjectViewset, ContributorViewset
 
 router = routers.SimpleRouter()
 router.register('signup', SignupViewset, basename='signup')
 router.register('projects', ProjectViewset, basename='projects')
+projects_router = routers.NestedSimpleRouter(
+    router,
+    r'projects',
+    lookup='project')
+projects_router.register(
+    r'users',
+    ContributorViewset,
+    basename='project-user'
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('api/', include(projects_router.urls))
+
 ]
