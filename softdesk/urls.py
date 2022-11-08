@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_nested import routers
 from authentification.views import SignupViewset
-from softdesk_api.views import ProjectViewset, ContributorViewset
+from softdesk_api.views import ProjectViewset, ContributorViewset, IssueViewset
 
 router = routers.SimpleRouter()
 router.register('signup', SignupViewset, basename='signup')
@@ -31,6 +31,12 @@ projects_router.register(
     ContributorViewset,
     basename='project-user'
 )
+projects_router.register(
+    r'issues',
+    IssueViewset,
+    basename='project-issue'
+)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),

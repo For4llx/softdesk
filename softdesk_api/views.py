@@ -1,6 +1,10 @@
 from rest_framework.viewsets import ModelViewSet
-from softdesk_api.serializers import ProjectSerializer, ProjectDetailSerializer, ContributorSerializer
-from softdesk_api.models import Project, Contributor
+from softdesk_api.serializers import (
+    ProjectSerializer, 
+    ProjectDetailSerializer, 
+    ContributorSerializer, 
+    IssuesSerializer)
+from softdesk_api.models import Project, Contributor, Issue
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -32,13 +36,20 @@ class ContributorViewset(ModelViewSet):
         """
         Get a contributor from a project OR get all contributors from a project
         """
-        project_pk = self.kwargs.get('project_pk')
+        project_id = self.kwargs.get('project_pk')
         contributor_id = self.kwargs.get('pk')
         if contributor_id:
             queryset = Contributor.objects.get(id=contributor_id)
         else:
-            queryset = Contributor.objects.filter(project_id=project_pk)
+            queryset = Contributor.objects.filter(project_id=project_id)
         return queryset
 
-class IssuesViewser(ModelViewSet):
-    pass
+class IssueViewset(ModelViewSet):
+    
+    queryset = Issue.objects.all()
+    serializer_class = IssuesSerializer
+
+    def get_queryset(self):
+        project_id = self.kwargs.get('project_pk')
+        queryset = Issue.objects.filter(project_id=project_id)
+        return queryset

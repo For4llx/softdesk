@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from softdesk_api.models import Project, Contributor
+from softdesk_api.models import Project, Contributor, Issue
 
 
 class ProjectSerializer(ModelSerializer):
@@ -16,4 +16,9 @@ class ProjectDetailSerializer(ModelSerializer):
 class ContributorSerializer(ModelSerializer):
     class Meta:
         model = Contributor
+        fields = '__all__'
+
+class IssuesSerializer(ModelSerializer):
+    class Meta:
+        model = Issue
         fields = '__all__'
