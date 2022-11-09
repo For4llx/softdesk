@@ -68,6 +68,7 @@ class Issue(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
 
 class Comment(models.Model):
+    comment_id = models.AutoField(primary_key=True)
     description = models.CharField(max_length=50)
     author_user_id = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

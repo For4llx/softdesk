@@ -17,7 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_nested import routers
 from authentification.views import SignupViewset
-from softdesk_api.views import ProjectViewset, ContributorViewset, IssueViewset
+from softdesk_api.views import (
+    ProjectViewset,
+    ContributorViewset,
+    IssueViewset,
+    CommentViewset)
 
 router = routers.SimpleRouter()
 router.register('signup', SignupViewset, basename='signup')
@@ -37,10 +41,19 @@ projects_router.register(
     basename='project-issue'
 )
 
+issues_router = routers.NestedSimpleRouter(
+    projects_router,
+    r'issues',
+    lookup='issue')
+issues_router.register(
+    r'comments',
+    CommentViewset,
+    basename='project-issue-comment'
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/', include(projects_router.urls))
-
+    path('api/', include(projects_router.urls)),
+    path('api/', include(issues_router.urls))
 ]

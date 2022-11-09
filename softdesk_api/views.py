@@ -3,10 +3,9 @@ from softdesk_api.serializers import (
     ProjectSerializer, 
     ProjectDetailSerializer, 
     ContributorSerializer, 
-    IssuesSerializer)
-from softdesk_api.models import Project, Contributor, Issue
-from rest_framework.response import Response
-from rest_framework import status
+    IssuesSerializer,
+    CommentSerializer)
+from softdesk_api.models import Project, Contributor, Issue, Comment
 
 
 class ProjectViewset(ModelViewSet):
@@ -17,13 +16,11 @@ class ProjectViewset(ModelViewSet):
 
     def get_queryset(self):
         user_id = self.request.GET.get('user_id')
-        if user_id:
-            queryset = Project.objects.filter(author_user_id=user_id)
-            return queryset
-        return super().get_queryset()
+        queryset = Project.objects.filter(author_user_id=user_id)
+        return queryset
 
     def get_serializer_class(self):
-        if self.action == 'retrieve' or self.action == 'create' or self.action == 'update':
+        if self.action != 'list':
             return self.detail_serializer_class
         return super().get_serializer_class()
 
@@ -52,4 +49,14 @@ class IssueViewset(ModelViewSet):
     def get_queryset(self):
         project_id = self.kwargs.get('project_pk')
         queryset = Issue.objects.filter(project_id=project_id)
+        return queryset
+
+class CommentViewset(ModelViewSet):
+
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        issue_id = self.kwargs.get('issue_pk')
+        queryset = Comment.objects.filter(issue_id=issue_id)
         return queryset
