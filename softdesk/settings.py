@@ -131,5 +131,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',)
 }
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'user_id',
+}
 
 AUTH_USER_MODEL = 'authentification.User'
