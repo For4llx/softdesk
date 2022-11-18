@@ -59,7 +59,7 @@ class Issue(models.Model):
     description = models.CharField(max_length=50)
     tag = models.CharField(choices=TAGS, default='', max_length=50)
     priority = models.CharField(choices=PRIORITIES, default='', max_length=50)
-    project_id = models.ForeignKey(to=Project, on_delete=models.CASCADE)
+    project_id = models.ForeignKey(to=Project, on_delete=models.CASCADE, blank=True)
     status = models.CharField(choices=STATUS, default='', max_length=50)
     author_user_id = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, related_name='author_user_id', on_delete=models.CASCADE, blank=True)
@@ -73,5 +73,5 @@ class Comment(models.Model):
     author_user_id = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
     issue_id = models.ForeignKey(
-        to=Issue, on_delete=models.CASCADE)
+        to=Issue, on_delete=models.CASCADE, blank=True)
     created_time = models.DateTimeField(auto_now_add=True)

@@ -48,14 +48,14 @@ class ContributorViewset(ModelViewSet):
         else:
             queryset = Contributor.objects.filter(project_id=project_id)
         return queryset
-    
+
     def create(self, request, project_pk="project_pk"):
+        contributor_data = request.data
         user_id = User.objects.get(user_id=request.data['user_id'])
         project_id = Project.objects.get(project_id=project_pk)
-        contributor_data = request.data
         contributor_data['project_id'] = project_id
         contributor_data['user_id'] = user_id
-        contributor = Contributor.objects.create(project_id=contributor_data['project_id'], permission=contributor_data['permission'],role=contributor_data['role'],user_id=contributor_data['user_id'])
+        contributor = Contributor.objects.create(**contributor_data)
         contributor.save()
         serializer = ContributorSerializer(contributor)
         return Response(serializer.data)
@@ -75,6 +75,20 @@ class IssueViewset(ModelViewSet):
         project_id = self.kwargs.get('project_pk')
         queryset = Issue.objects.filter(project_id=project_id)
         return queryset
+    
+    def create(self, request, project_pk="project_pk"):
+        assignee_user_pk = request.data['assignee_user_id']
+        project_id = Project.objects.get(project_id=project_pk)
+        assignee_user_id = User.objects.get(user_id=assignee_user_pk)
+        author_user_id = User.objects.get(user_id=self.request.user.user_id)
+        issue_data = request.data
+        issue_data['project_id'] = project_id
+        issue_data['assignee_user_id'] = assignee_user_id
+        issue_data['author_user_id'] = author_user_id
+        issue = Issue.objects.create(**issue_data)
+        issue.save()
+        serializer = IssuesSerializer(issue)
+        return Response(serializer.data)
 
 class CommentViewset(ModelViewSet):
 
@@ -86,3 +100,14 @@ class CommentViewset(ModelViewSet):
         issue_id = self.kwargs.get('issue_pk')
         queryset = Comment.objects.filter(issue_id=issue_id)
         return queryset
+    
+    def create(self, request, project_pk="project_pk", issue_pk="issue_pk"):
+        comment_data = request.data
+        author_user_id = User.objects.get(user_id=self.request.user.user_id)
+        issue_id = Issue.objects.get(id=issue_pk)
+        comment_data['author_user_id'] = author_user_id
+        comment_data['issue_id'] = issue_id
+        comment = Comment.objects.create(**comment_data)
+        comment.save()
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data)
