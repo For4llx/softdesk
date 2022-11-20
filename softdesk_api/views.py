@@ -9,14 +9,15 @@ from authentification.models import User
 from softdesk_api.models import Project, Contributor, Issue, Comment
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from softdesk_api.permissions import IsAuthorOrReadOnly
+from softdesk_api.permissions import IsAuthorOrReadOnly, IsContributor
+from django.db.models import Q
 
 class ProjectViewset(ModelViewSet):
 
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     detail_serializer_class = ProjectDetailSerializer
-    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly|IsContributor]
 
     def get_queryset(self):
         """
@@ -62,7 +63,7 @@ class ContributorViewset(ModelViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, project_pk, pk):
-        contributor = Contributor.objects.get(id=pk)
+        contributor = Contributor.objects.get(Q(user_id=pk) & Q(project_id=project_pk))
         contributor.delete()
         return Response()
 
