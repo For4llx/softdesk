@@ -9,13 +9,14 @@ from authentification.models import User
 from softdesk_api.models import Project, Contributor, Issue, Comment
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from softdesk_api.permissions import IsAuthorOrReadOnly
 
 class ProjectViewset(ModelViewSet):
 
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     detail_serializer_class = ProjectDetailSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
 
     def get_queryset(self):
         """
@@ -69,7 +70,7 @@ class IssueViewset(ModelViewSet):
     
     queryset = Issue.objects.all()
     serializer_class = IssuesSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
 
     def get_queryset(self):
         project_id = self.kwargs.get('project_pk')
@@ -94,7 +95,7 @@ class CommentViewset(ModelViewSet):
 
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
 
     def get_queryset(self):
         issue_id = self.kwargs.get('issue_pk')
