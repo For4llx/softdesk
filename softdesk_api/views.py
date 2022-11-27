@@ -1,8 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from softdesk_api.serializers import (
-    ProjectSerializer, 
-    ProjectDetailSerializer, 
-    ContributorSerializer, 
+    ProjectSerializer,
+    ProjectDetailSerializer,
+    ContributorSerializer,
     IssuesSerializer,
     CommentSerializer)
 from authentification.models import User
@@ -12,27 +12,31 @@ from rest_framework.response import Response
 from softdesk_api.permissions import IsAuthorOrReadOnly, IsContributor
 from django.db.models import Q
 
+
 class ProjectViewset(ModelViewSet):
 
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     detail_serializer_class = ProjectDetailSerializer
-    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly|IsContributor]
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly | IsContributor]
 
     def get_queryset(self):
         """
-        Get all the projects that the current user authentified created.        
+        Get all the projects that the current user authentified created.
         """
-        queryset = Project.objects.filter(author_user_id=self.request.user.user_id)
+        queryset = Project.objects.filter(
+            author_user_id=self.request.user.user_id)
         return queryset
 
     def get_serializer_class(self):
         """
-        Every action will use a detail serializer except the listing of all the projects.
+        Every action will use a detail serializer
+        except the listing of all the projects.
         """
         if self.action != 'list':
             return self.detail_serializer_class
         return super().get_serializer_class()
+
 
 class ContributorViewset(ModelViewSet):
 
@@ -63,12 +67,14 @@ class ContributorViewset(ModelViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, project_pk, pk):
-        contributor = Contributor.objects.get(Q(user_id=pk) & Q(project_id=project_pk))
+        contributor = Contributor.objects.get(
+            Q(user_id=pk) & Q(project_id=project_pk))
         contributor.delete()
         return Response()
 
+
 class IssueViewset(ModelViewSet):
-    
+
     queryset = Issue.objects.all()
     serializer_class = IssuesSerializer
     permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
@@ -77,7 +83,7 @@ class IssueViewset(ModelViewSet):
         project_id = self.kwargs.get('project_pk')
         queryset = Issue.objects.filter(project_id=project_id)
         return queryset
-    
+
     def create(self, request, project_pk="project_pk"):
         assignee_user_pk = request.data['assignee_user_id']
         project_id = Project.objects.get(project_id=project_pk)
@@ -92,6 +98,7 @@ class IssueViewset(ModelViewSet):
         serializer = IssuesSerializer(issue)
         return Response(serializer.data)
 
+
 class CommentViewset(ModelViewSet):
 
     queryset = Comment.objects.all()
@@ -102,7 +109,7 @@ class CommentViewset(ModelViewSet):
         issue_id = self.kwargs.get('issue_pk')
         queryset = Comment.objects.filter(issue_id=issue_id)
         return queryset
-    
+
     def create(self, request, project_pk="project_pk", issue_pk="issue_pk"):
         comment_data = request.data
         author_user_id = User.objects.get(user_id=self.request.user.user_id)
